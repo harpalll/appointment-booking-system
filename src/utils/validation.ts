@@ -38,3 +38,7 @@ export const setAvailabilitySchema = z.object({
       "Invalid time format, expected 'HH:MM' in 24-hour time (e.g., 09:00)",
     ),
 });
+
+export const bookAppointmentSchema = z.object({
+  slotId: z.string(),
+});
