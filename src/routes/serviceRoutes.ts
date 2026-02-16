@@ -8,6 +8,8 @@ import {
 } from "../utils/validation";
 import {
   createService,
+  getServices,
+  getServiceSlots,
   setAvailability,
 } from "../controller/serviceController";
 
@@ -28,5 +30,8 @@ router.post(
   validateData(setAvailabilitySchema),
   setAvailability,
 );
+
+router.get("/", authenticate, getServices);
+router.get("/:serviceId/slots", authenticate, getServiceSlots);
 
 export default router;
