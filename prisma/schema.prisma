@@ -39,7 +39,7 @@ model Service {
   type            ServiceType
   providerId      String
   provider        User        @relation(fields: [providerId], references: [id])
-  durationMinutes DateTime
+  durationMinutes Int
   createdAt       DateTime    @default(now())
 
   availabilities Availability[]
