@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../db";
 import { registerSchema, loginSchema } from "../utils/validation";
+import type { AuthRequest } from "../utils/types";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -30,7 +31,9 @@ export async function register(req: Request, res: Response): Promise<void> {
       },
     });
 
-    res.status(201).json({ message: `User created Successfully with id ${user.id}` });
+    res
+      .status(201)
+      .json({ message: `User created Successfully with id ${user.id}` });
   } catch (error: unknown) {
     if (error instanceof Error && error.name === "ZodError") {
       res.status(400).json({ error: "Invalid input", details: error });
@@ -54,7 +57,10 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const isValidPassword = await bcrypt.compare(validatedData.password, user.passwordHash);
+    const isValidPassword = await bcrypt.compare(
+      validatedData.password,
+      user.passwordHash,
+    );
 
     if (!isValidPassword) {
       res.status(401).json({ error: "Invalid credentials" });
@@ -74,4 +80,10 @@ export async function login(req: Request, res: Response): Promise<void> {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
+}
+
+export async function me(req: AuthRequest, res: Response): Promise<void> {
+  res.status(200).json({
+    user: req.user,
+  });
 }

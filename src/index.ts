@@ -8,6 +8,10 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 
+app.get("/api/healthCheck", (req, res) => {
+  res.status(200).json({ message: "server is up and running" });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

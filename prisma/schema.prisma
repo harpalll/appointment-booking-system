@@ -13,10 +13,67 @@ enum Role {
 }
 
 model User {
-  id           String        @id @default(uuid())
+  id           String   @id @default(uuid())
   name         String
-  email        String        @unique
+  email        String   @unique
   passwordHash String
   role         Role
-  createdAt    DateTime      @default(now())
+  createdAt    DateTime @default(now())
+
+  services     Service[]
+  appointments Appointment[]
+}
+
+enum ServiceType {
+  MEDICAL
+  HOUSE_HELP
+  BEAUTY
+  FITNESS
+  EDUCATION
+  OTHER
+}
+
+model Service {
+  id              String      @id @default(uuid())
+  name            String
+  type            ServiceType
+  providerId      String
+  provider        User        @relation(fields: [providerId], references: [id])
+  durationMinutes DateTime
+  createdAt       DateTime    @default(now())
+
+  availabilities Availability[]
+  appointments   Appointment[]
+}
+
+model Availability {
+  id        String @id @default(uuid())
+  dayOfWeek Int
+  startTime String
+  endTime   String
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+}
+
+enum AppointmentStatus {
+  BOOKED
+  CANCELLED
+}
+
+model Appointment {
+  id        String            @id @default(uuid())
+  date      DateTime
+  startTime String
+  endTime   String
+  slotId    String
+  status    AppointmentStatus
+  createdAt DateTime          @default(now())
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  @@unique([slotId, status])
 }
